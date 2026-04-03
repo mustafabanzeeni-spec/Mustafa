@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mustafa Ultra Data Entry Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- Login Section -->
+<section id="login-section">
+  <h2>Welcome to Mustafa System</h2>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+</section>
+
+<!-- Dashboard Section -->
+<section id="dashboard-section" class="dashboard-hidden" style="display:none;">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <span>Mustafa System</span>
+      <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    </div>
+    <ul>
+      <li class="active" onclick="showPage('dashboard')"><span class="icon">🏠</span> Data Entry</li>
+      <li onclick="showPage('analytics')"><span class="icon">📊</span> Analytics</li>
+      <li onclick="showPage('reports')"><span class="icon">📋</span> Reports</li>
+      <li onclick="showPage('settings')"><span class="icon">⚙️</span> Settings</li>
+      <li onclick="logout()"><span class="icon">🚪</span> Logout</li>
+    </ul>
+  </div>
+
+  <!-- Top Navbar -->
+  <div class="top-navbar">
+    <span class="system-name">Mustafa Ultra System</span>
+    <div class="user-info">
+      <span id="user-display"></span>
+      <button onclick="toggleTheme()">🌓</button>
+      <button onclick="toggleNotifications()">🔔</button>
+    </div>
+  </div>
+
+  <!-- Notifications Panel -->
+  <div class="notifications-panel" id="notifications-panel">
+    <h4>Notifications</h4>
+    <ul>
+      <li>New user registered</li>
+      <li>Server load is high</li>
+      <li>Monthly report is ready</li>
+    </ul>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page">
+      <div class="dashboard-header">
+        <div>
+          <h2>Data Entry Dashboard</h2>
+          <p>Track your latest sales entries, manage categories, and review performance in a single workspace.</p>
+        </div>
+        <button class="primary-btn" onclick="showPage('reports')">Open Reports</button>
+      </div>
+      <div class="widgets">
+        <div class="widget" id="widgetEntries">Entries: 0</div>
+        <div class="widget" id="widgetRevenue">Revenue: $0</div>
+        <div class="widget" id="widgetOrders">Items: 0</div>
+        <div class="widget" id="widgetCategories">Categories: 0</div>
+      </div>
+      <div class="entry-layout">
+        <div class="entry-left">
+          <div class="entry-card">
+            <h3>New Data Entry</h3>
+            <form id="addEntryForm">
+              <input type="text" id="entryProduct" placeholder="Product name" required>
+              <select id="entryCategory" required>
+                <option value="">Select category</option>
+                <option value="Fruit">Fruit</option>
+                <option value="Beverage">Beverage</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Other">Other</option>
+              </select>
+              <input type="number" id="entryQuantity" placeholder="Quantity" min="1" required>
+              <input type="number" id="entryRevenue" placeholder="Revenue ($)" min="0" step="0.01" required>
+              <button type="submit">Add Entry</button>
+            </form>
+          </div>
+          <div class="entry-card recent-entries-card">
+            <div class="card-title-row">
+              <h3>Recent Entries</h3>
+              <input type="text" id="entrySearch" placeholder="Search entries..." onkeyup="searchEntryTable()">
+            </div>
+            <table id="entriesTable">
+              <thead>
+                <tr><th>Product</th><th>Category</th><th>Qty</th><th>Revenue</th><th>Date</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="entry-right">
+          <div class="chart-card">
+            <h3>Revenue by Product</h3>
+            <canvas id="salesChart"></canvas>
+          </div>
+          <div class="chart-row">
+            <div class="chart-card">
+              <h3>Quantity Trend</h3>
+              <canvas id="trafficChart"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3>Revenue Distribution</h3>
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Page -->
+    <div id="analytics" class="page" style="display:none;">
+      <h2>Analytics Overview</h2>
+      <canvas id="analyticsChart"></canvas>
+    </div>
+
+    <!-- Reports Page -->
+    <div id="reports" class="page" style="display:none;">
+      <h2>Reports</h2>
+      <input type="text" id="tableSearch" placeholder="Search product..." onkeyup="searchTable()">
+      <table id="salesTable">
+        <thead>
+          <tr><th>Product</th><th>Sales</th><th>Revenue</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings" class="page" style="display:none;">
+      <h2>Settings</h2>
+      <button onclick="toggleTheme()">Toggle Dark/Light Theme</button>
+      <div class="user-management">
+        <h3>User Management</h3>
+        <form id="createUserForm">
+          <input type="text" id="newUsername" placeholder="New username" required>
+          <input type="password" id="newPassword" placeholder="New password" required>
+          <button type="submit">Create User</button>
+        </form>
+        <div class="user-list-section">
+          <h4>Existing Users</h4>
+          <ul id="userList"></ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
