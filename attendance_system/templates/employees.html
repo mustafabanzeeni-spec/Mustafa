@@ -1,0 +1,34 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <h2>Add Employee</h2>
+  <form method="post" class="form-row">
+    <input type="text" name="name" placeholder="Employee name" required>
+    <button type="submit" class="btn-primary">Save</button>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Employee List</h2>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for employee in employees %}
+      <tr>
+        <td>{{ employee.id }}</td>
+        <td>{{ employee.name }}</td>
+        <td>
+          <form method="post" action="{{ url_for('delete_employee', employee_id=employee.id) }}" onsubmit="return confirm('Delete this employee?')">
+            <button type="submit" class="btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3">No employees yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

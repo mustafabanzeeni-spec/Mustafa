@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <h2>Add Rider Shift</h2>
+  {% if msg %}
+  <div class="notice">{{ msg }}</div>
+  {% endif %}
+  <form method="post" class="form-grid">
+    <input type="hidden" name="action" value="single">
+    <input type="date" name="date" required>
+    <input type="text" name="shift_window" placeholder="Shift Window (e.g. 6:30AM - 3:30PM)" required>
+    <input type="text" name="zone_code" placeholder="Zone Code (e.g. B13)" required>
+    <input type="text" name="area_name" placeholder="Area Name" required>
+    <input type="text" name="driver_name" placeholder="Driver Name" required>
+    <input type="text" name="assignment_type" placeholder="Assignment Type (Delivery/Stationary)" required>
+    <button type="submit" class="btn-primary">Save Rider Shift</button>
+  </form>
+</section>
+
+<section class="panel glow-panel">
+  <h2>Upload Driver Shift</h2>
+  <p class="helper">Accepted columns: date, shift_window, zone_code, area_name, driver_name, assignment_type (CSV/XLSX)</p>
+  <p class="helper">Link a Google Sheet (shared to Anyone with link), then sync automatically or manually.</p>
+  <p class="helper">Link status:
+    <span class="status-badge status-{{ linked_status }}">
+      {% if linked_status == 'ok' %}Connected{% elif linked_status == 'error' %}Sync Error{% else %}Not Synced{% endif %}
+    </span>
+  </p>
+  <p class="helper">Last sync: <strong>{{ linked_last_sync }}</strong></p>
+  <form method="post" class="upload-form">
+    <input type="hidden" name="action" value="set_linked_sheet">
+    <input type="url" name="linked_sheet_url" value="{{ linked_sheet_url }}" placeholder="Paste Google Sheet URL here" required>
+    <button type="submit" class="btn-primary">Save Google Sheet Link</button>
+  </form>
+  <form method="post" enctype="multipart/form-data" class="upload-form">
+    <input type="hidden" name="action" value="upload">
+    <input class="file-input" type="file" name="rider_shift_file" accept=".csv,.xlsx,.xls" required>
+    <button type="submit" class="btn-primary">Upload Driver Shift</button>
+  </form>
+  <form method="post" class="danger-form">
+    <input type="hidden" name="action" value="sync_linked">
+    <button type="submit" class="btn-primary">Sync Linked Sheet Now</button>
+  </form>
+  <form method="post" class="danger-form" onsubmit="return confirm('Clear all rider shifts data?')">
+    <input type="hidden" name="action" value="clear">
+    <button type="submit" class="btn-danger">Clear All Rider Shifts</button>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Riders Shifts Log</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Shift Window</th>
+        <th>Zone Code</th>
+        <th>Area Name</th>
+        <th>Driver Name</th>
+        <th>Assignment Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.date }}</td>
+        <td>{{ row.shift_window }}</td>
+        <td>{{ row.zone_code }}</td>
+        <td>{{ row.area_name }}</td>
+        <td>{{ row.driver_name }}</td>
+        <td>{{ row.assignment_type }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No rider shifts yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

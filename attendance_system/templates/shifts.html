@@ -1,0 +1,75 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <h2>Add Employee Shift</h2>
+  {% if msg %}
+  <div class="notice">{{ msg }}</div>
+  {% endif %}
+  <form method="post" class="form-grid">
+    <input type="hidden" name="action" value="single">
+    <select name="employee_id" class="select-control" required>
+      <option value="">Select employee</option>
+      {% for employee in employees %}
+      <option value="{{ employee.id }}">{{ employee.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="date" name="date" required>
+    <input type="time" name="shift_start" required>
+    <input type="time" name="shift_end" required>
+    <button type="submit" class="btn-primary">Save Employee Shift</button>
+  </form>
+</section>
+
+<section class="panel glow-panel">
+  <h2>Upload Employee Shift</h2>
+  <p class="helper">Accepted columns: employee_name, date, shift_start, shift_end (CSV/XLSX)</p>
+  <p class="helper">Google Sheet link for employee shifts: <strong>{{ linked_sheet_url if linked_sheet_url else 'Not set' }}</strong></p>
+  <p class="helper">Sheet tab used: <strong>{{ linked_sheet_tab }}</strong></p>
+  <p class="helper">Link status:
+    <span class="status-badge status-{{ linked_status }}">
+      {% if linked_status == 'ok' %}Connected{% elif linked_status == 'error' %}Sync Error{% else %}Not Synced{% endif %}
+    </span>
+  </p>
+  <p class="helper">Last sync: <strong>{{ linked_last_sync }}</strong></p>
+  <form method="post" class="upload-form">
+    <input type="hidden" name="action" value="set_linked_sheet">
+    <input type="url" name="linked_sheet_url" value="{{ linked_sheet_url }}" placeholder="Paste Employee Google Sheet URL here" required>
+    <input type="text" name="linked_sheet_tab" value="{{ linked_sheet_tab }}" placeholder="Sheet Tab Name (e.g. Employee Shift)" required>
+    <button type="submit" class="btn-primary">Save Google Sheet Link</button>
+  </form>
+  <form method="post" enctype="multipart/form-data" class="upload-form">
+    <input type="hidden" name="action" value="upload">
+    <input class="file-input" type="file" name="shift_file" accept=".csv,.xlsx,.xls" required>
+    <button type="submit" class="btn-primary">Upload Employee Shift</button>
+  </form>
+  <form method="post" class="danger-form">
+    <input type="hidden" name="action" value="sync_linked">
+    <button type="submit" class="btn-primary">Sync Linked Employee Sheet Now</button>
+  </form>
+  <form method="post" class="danger-form" onsubmit="return confirm('Clear all shifts data?')">
+    <input type="hidden" name="action" value="clear">
+    <button type="submit" class="btn-danger">Clear All Employee Shifts</button>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Saved Employee Shifts</h2>
+  <table>
+    <thead>
+      <tr><th>Employee</th><th>Date</th><th>Start</th><th>End</th></tr>
+    </thead>
+    <tbody>
+      {% for row in shifts %}
+      <tr>
+        <td>{{ row.employee_name }}</td>
+        <td>{{ row.date }}</td>
+        <td>{{ row.shift_start }}</td>
+        <td>{{ row.shift_end }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">No shifts yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

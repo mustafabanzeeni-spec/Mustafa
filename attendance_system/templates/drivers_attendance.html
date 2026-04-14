@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <h2>Add Driver Attendance</h2>
+  {% if msg %}
+  <div class="notice">{{ msg }}</div>
+  {% endif %}
+  <form method="post" class="form-grid">
+    <input type="hidden" name="action" value="single">
+    <select name="driver_id" class="select-control" required>
+      <option value="">Select driver</option>
+      {% for driver in drivers %}
+      <option value="{{ driver.id }}">{{ driver.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="date" name="date" required>
+    <input type="time" name="check_in" required>
+    <input type="time" name="check_out" required>
+    <button type="submit" class="btn-primary">Save Driver Attendance</button>
+  </form>
+</section>
+
+<section class="panel glow-panel">
+  <h2>Upload Driver Attendance</h2>
+  <p class="helper">Accepted columns: driver_name, date, check_in, check_out (CSV/XLSX)</p>
+  <p class="helper">Driver Attendance Sheet tab:
+    <strong>{{ linked_sheet_tab }}</strong>
+    <span class="status-badge status-{{ linked_status }}">
+      {% if linked_status == 'ok' %}Connected{% elif linked_status == 'error' %}Sync Error{% else %}Not Synced{% endif %}
+    </span>
+  </p>
+  <p class="helper">Last sync: <strong>{{ linked_last_sync }}</strong></p>
+  <form method="post" class="upload-form">
+    <input type="hidden" name="action" value="set_linked_sheet">
+    <input type="url" name="linked_sheet_url" value="{{ linked_sheet_url }}" placeholder="Paste Google Sheet URL here" required>
+    <input type="text" name="linked_sheet_tab" value="{{ linked_sheet_tab }}" placeholder="Sheet tab (Driver aTTENDANCE)" required>
+    <button type="submit" class="btn-primary">Save Google Sheet Link</button>
+  </form>
+  <form method="post" class="danger-form">
+    <input type="hidden" name="action" value="sync_linked">
+    <button type="submit" class="btn-primary">Sync Linked Driver Attendance</button>
+  </form>
+  <form method="post" enctype="multipart/form-data" class="upload-form">
+    <input type="hidden" name="action" value="upload">
+    <input class="file-input" type="file" name="driver_attendance_file" accept=".csv,.xlsx,.xls" required>
+    <button type="submit" class="btn-primary">Upload Driver Attendance</button>
+  </form>
+  <form method="post" class="danger-form" onsubmit="return confirm('Clear all driver attendance data?')">
+    <input type="hidden" name="action" value="clear">
+    <button type="submit" class="btn-danger">Clear All Driver Attendance</button>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Driver Attendance Log</h2>
+  <table>
+    <thead>
+      <tr><th>Driver</th><th>Date</th><th>Check In</th><th>Check Out</th></tr>
+    </thead>
+    <tbody>
+      {% for row in attendance %}
+      <tr>
+        <td>{{ row.driver_name }}</td>
+        <td>{{ row.date }}</td>
+        <td>{{ row.check_in }}</td>
+        <td>{{ row.check_out }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">No driver attendance yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <h2>Driver Report Filters</h2>
+  <form method="get" class="filter-grid">
+    <div class="field">
+      <label>Period</label>
+      <select name="period" class="select-control">
+        <option value="all" {% if filters.period == 'all' %}selected{% endif %}>All</option>
+        <option value="day" {% if filters.period == 'day' %}selected{% endif %}>Per Day</option>
+        <option value="week" {% if filters.period == 'week' %}selected{% endif %}>Per Week</option>
+        <option value="month" {% if filters.period == 'month' %}selected{% endif %}>Per Month</option>
+        <option value="custom" {% if filters.period == 'custom' %}selected{% endif %}>Custom Range</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Start Date</label>
+      <input type="date" name="start_date" value="{{ filters.start_date }}" placeholder="Start date">
+    </div>
+    <div class="field">
+      <label>End Date</label>
+      <input type="date" name="end_date" value="{{ filters.end_date }}" placeholder="End date">
+    </div>
+    <button type="submit">Apply Filters</button>
+  </form>
+</section>
+
+<section class="stats-grid">
+  <article class="stat-card glass">
+    <h3>Total Drivers</h3>
+    <p>{{ stats.driver_count }}</p>
+  </article>
+  <article class="stat-card glass">
+    <h3>Attendance Records</h3>
+    <p>{{ stats.attendance_count }}</p>
+  </article>
+  <article class="stat-card glass late">
+    <h3>Late Check-ins</h3>
+    <p>{{ stats.late_count }}</p>
+  </article>
+  <article class="stat-card glass ontime">
+    <h3>On-time Check-ins</h3>
+    <p>{{ stats.on_time_count }}</p>
+  </article>
+</section>
+
+<section class="panel">
+  <h2>Driver Summary</h2>
+  <a class="button" href="{{ url_for('export_driver_report', period=export_query.period, start_date=export_query.start_date, end_date=export_query.end_date) }}">Export Excel</a>
+  <table>
+    <thead>
+      <tr><th>Driver</th><th>Total Worked Hours</th><th>Total Overtime</th></tr>
+    </thead>
+    <tbody>
+      {% for row in summary %}
+      <tr>
+        <td>{{ row.driver_name }}</td>
+        <td>{{ row.total_worked_hours }}</td>
+        <td>{{ row.total_overtime_hours }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3">No driver report data yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <h2>Driver Detailed Report</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Driver</th><th>Date</th><th>Check In</th><th>Check Out</th>
+        <th>Shift Start</th><th>Shift End</th><th>Worked Hours</th><th>Overtime</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.driver_name }}</td>
+        <td>{{ row.date }}</td>
+        <td>{{ row.check_in }}</td>
+        <td>{{ row.check_out }}</td>
+        <td>{{ row.shift_start }}</td>
+        <td>{{ row.shift_end }}</td>
+        <td>{{ row.worked_hours }}</td>
+        <td>{{ row.overtime_hours }}</td>
+        <td>{{ row.status }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9">No driver report data yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

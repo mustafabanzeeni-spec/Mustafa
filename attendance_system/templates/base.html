@@ -1,0 +1,55 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attendance System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="bg-aurora"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar glass">
+      <div class="brand">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="System logo" class="logo">
+        <div class="brand-text">
+          <h1>Attendance</h1>
+          <p>Management System</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item {% if request.endpoint == 'shifts' %}active{% endif %}" href="{{ url_for('shifts') }}">
+          <span class="nav-icon">🕘</span>
+          <span class="nav-label">Employee Shift</span>
+        </a>
+        <a class="nav-item {% if request.endpoint == 'attendance' %}active{% endif %}" href="{{ url_for('attendance') }}">
+          <span class="nav-icon">✅</span>
+          <span class="nav-label">Attendance</span>
+        </a>
+        <a class="nav-item {% if request.endpoint == 'riders_shifts' %}active{% endif %}" href="{{ url_for('riders_shifts') }}">
+          <span class="nav-icon">🛵</span>
+          <span class="nav-label">Riders Shifts</span>
+        </a>
+        <a class="nav-item {% if request.endpoint == 'drivers_attendance' %}active{% endif %}" href="{{ url_for('drivers_attendance') }}">
+          <span class="nav-icon">🚚</span>
+          <span class="nav-label">Driver Attendance</span>
+        </a>
+        <a class="nav-item {% if request.endpoint in ['driver_reports', 'export_driver_report'] %}active{% endif %}" href="{{ url_for('driver_reports') }}">
+          <span class="nav-icon">📈</span>
+          <span class="nav-label">Driver Reports</span>
+        </a>
+        <a class="nav-item {% if request.endpoint in ['reports', 'export_report'] %}active{% endif %}" href="{{ url_for('reports') }}">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Employee Reports</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
